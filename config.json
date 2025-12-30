@@ -39,9 +39,10 @@
       "minWidth": 14
     }
   ],
+  "font_scale": 1.25,
+  "baseline_offset": 6.0,
+  "advance_scale": 1.125,
   "atlas_max_size": 2048,
-  "global_offset_correction": 6.0,
-  "global_scale": 1.25,
   "fonts": [
     {
       "path": "./方正FW轻吟体 简 D.TTF",

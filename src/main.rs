@@ -31,7 +31,7 @@ fn process_font_size(
     global_config: &AppConfig,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let base_size = size_config.maxHeight;
-    let render_size = base_size * global_config.global_scale;
+    let render_size = base_size * global_config.font_scale;
 
     println!(
         "正在生成字号: {:.0} (渲染尺寸: {:.1})...",
@@ -42,7 +42,14 @@ fn process_font_size(
 
     let mut char_data_list = Vec::new();
     for &c in chars {
-        let char_data = rasterize_char(c, fonts, size_config, render_size, metrics.baseline_y);
+        let char_data = rasterize_char(
+            c,
+            fonts,
+            size_config,
+            render_size,
+            metrics.baseline_y,
+            global_config.advance_scale,
+        );
         char_data_list.push(char_data);
     }
 
@@ -75,7 +82,7 @@ fn calculate_metrics(
 
     let max_ref_size = global_config.font_sizes.last().unwrap().maxHeight;
     let size_ratio = size_config.maxHeight / max_ref_size;
-    let dynamic_offset = (global_config.global_offset_correction * size_ratio).round();
+    let dynamic_offset = (global_config.baseline_offset * size_ratio).round();
 
     let unified_b = baseline_y + dynamic_offset;
     let unified_a = unified_b - fixed_height as f32;
@@ -95,6 +102,7 @@ fn rasterize_char(
     size_config: &FontSizeConfig,
     base_render_size: f32,
     drawing_baseline_y: f32,
+    advance_scale: f32,
 ) -> CharData {
     let font_idx = fonts
         .iter()
@@ -166,7 +174,7 @@ fn rasterize_char(
         });
     }
 
-    let final_advance = h_advance.max(size_config.minWidth);
+    let final_advance = (h_advance.max(size_config.minWidth) * advance_scale).round();
 
     CharData {
         c,

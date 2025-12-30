@@ -9,12 +9,14 @@ pub struct AppConfig {
     pub output_dir: String,
     pub chars_file: String,
     pub font_sizes: Vec<FontSizeConfig>,
+    #[serde(default = "default_scale")]
+    pub font_scale: f32,
+    #[serde(default)]
+    pub baseline_offset: f32,
+    #[serde(default = "default_scale")]
+    pub advance_scale: f32,
     #[serde(default = "default_atlas_size")]
     pub atlas_max_size: u32,
-    #[serde(default)]
-    pub global_offset_correction: f32,
-    #[serde(default = "default_scale")]
-    pub global_scale: f32,
     pub fonts: Vec<FontConfig>,
 }
 
